@@ -1,0 +1,113 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    min-width: 640px;
+    margin-bottom: 22px;
+}
+
+.card_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0088ca;
+    min-height: 43px;
+    color: #ffffff;
+}
+
+.card_preview {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 13px;
+}
+
+.card_price {
+    font-size: 24px;
+}
+
+.card_header-text {
+    font-size: 12px;
+}
+
+.card_flight-info {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 3px solid #6c9dd0;
+}
+
+.card_flight-info:last-of-type {
+    border-bottom: none;
+}
+
+.card_path-info {
+    font-size: 19px;
+    margin: 11px 17px;
+}
+
+.card_path-info-teg {
+    font-size: 19px;
+    color: #6c9dd0;
+}
+
+.card_time-info {
+    display: flex;
+    justify-content: space-between;
+    min-height: 40px;
+}
+
+.card_time-block {
+    display: flex;
+    margin: 0 40px 0 20px;
+}
+
+.card_time {
+    margin: 0;
+    font-size: 22px;
+    align-self: center;
+}
+
+.card_date {
+    margin: 0 4px 0;
+    font-size: 20px;
+    align-self: center;
+    color: #6c9dd0;
+}
+
+.card_duration {
+    margin: 0;
+    font-size: 20px;
+    align-self: center;
+}
+
+.card_transfer-info {
+    position: relative;
+    padding: 0 60px;
+}
+
+.card_split-line {
+    color: #808080;
+    border-width: 1px;
+}
+
+.card_transfer-status {
+    position: absolute;
+    left: 267px;
+    top: -5px;
+    background: #ffffff;
+    padding: 0 10px;
+    font-size: 18px;
+    color: #ffb368;
+}
+
+.card_airline-info {
+    margin: 9px 0 0 20px;
+    font-size: 18px;
+    min-height: 32px;
+}
+
+.card_select-btn {
+    background-color: #ffb368;
+    min-height: 42px;
+    border: none;
+    color: #ffffff;
+}

@@ -1,1 +1,4 @@
+@import url(./components/Main/Main.css);
 @import url(./components/Filter/Filter.css);
+@import url(./components/CardsList/CardList.css);
+@import url(./components/Card/Card.css);
