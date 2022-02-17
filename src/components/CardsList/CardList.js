@@ -1,11 +1,13 @@
-import Card from "../Card/Card"
+import Card from '../Card/Card';
 
-function CardList() {
-    return (
-        <ul className='card-list'>
-        <Card/>
-        </ul>
-    )
+function CardList({ renderedCards }) {
+  return (
+    <ul className='card-list'>
+      {renderedCards.map((flight) => (
+        <Card key={flight.flightToken} flight={flight} />
+      ))}
+    </ul>
+  );
 }
 
-export default CardList
+export default CardList;

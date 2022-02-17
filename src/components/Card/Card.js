@@ -1,10 +1,10 @@
-function Card() {
+function Card({flight}) {
   return (
     <li className='card'>
       <div className='card_header'>
         <img alt='логотип' className='card_logo' />
         <div className='card_preview'>
-          <div className='card_price'>21049 &#8381;</div>
+          <div className='card_price'>{flight.price} &#8381;</div>
           <div className='card_header-text'>Стоимость для одного взрослого пассажира</div>
         </div>
       </div>
