@@ -116,6 +116,23 @@ function App() {
     });
   }
 
+  function filterByPrice(data) {
+    data.sort((a, b) => {
+      return a.firstRun.travelDuration - b.firstRun.travelDuration;
+    });
+  }
+
+  function SortFlights(isOrderChecked) {
+    console.log(isOrderChecked);
+    if (isOrderChecked === 1) {
+      setShownFilteredData(filterFromHightToLow(filteredData));
+    } else if (isOrderChecked === 2) {
+      setShownFilteredData(filterFromLowToHight(filteredData));
+    } else if (isOrderChecked === 3) {
+      setShownFilteredData(filterByPrice(filteredData));
+    }
+  }
+
   function filterByOneTransfer(data) {
     return data.filter((flight) => {
       if (flight.firstRun.transfer && flight.secondRun.transfer) {
@@ -135,13 +152,24 @@ function App() {
       } else {
         return false;
       }
-    })
+    });
   }
+
+  function filterByCocatTransfer(data) {
+    return data.filter((flight) => {
+      if (flight.firstRun.transfer && flight.secondRun.transfer) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  }
+
 
   function filterByTransfer(isTransferChecked, isNoTransferChecked) {
     if (isTransferChecked) {
       if (isNoTransferChecked) {
-        setShownFilteredData([...filterByOneTransfer(filteredData)], filterByNoTransfer(filteredData))
+        setShownFilteredData(filterByCocatTransfer(filteredData))
       } else {
         setShownFilteredData(filterByOneTransfer(filteredData))
       }
@@ -151,34 +179,6 @@ function App() {
       } else{
         setShownFilteredData(filteredData)
       }
-    }
-  }
-
-  function SortFlights(
-    isOrderChecked
-    // isTransferChecked,
-    // isNoTransferChecked,
-    // minFilterValue,
-    // maxFilterValue
-  ) {
-    console.log(isOrderChecked);
-    const NotSortData = filteredData;
-    switch (isOrderChecked) {
-      case '1':
-        setShownFilteredData(filterFromHightToLow(NotSortData));
-        break;
-      case '2':
-        setShownFilteredData(filterFromLowToHight(NotSortData));
-        break;
-      case '3':
-        const buffer2 = NotSortData.sort((a, b) => {
-          return a.firstRun.travelDuration - b.firstRun.travelDuration;
-        });
-        console.log(buffer2);
-        setShownFilteredData(buffer2);
-        break;
-      default:
-        return;
     }
   }
 

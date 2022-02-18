@@ -1,6 +1,6 @@
 import react from 'react';
 
-function Filter({ onFilter }) {
+function Filter({ onFilter, onSort }) {
   const [isOrderChecked, setIsOrderChecked] = react.useState('1');
   const [isTransferChecked, setIsTransferChecked] = react.useState(false);
   const [isNoTransferChecked, setIsNoTransferChecked] = react.useState(false);
@@ -9,7 +9,7 @@ function Filter({ onFilter }) {
 
   function handleChangeOrderBtn(e) {
     setIsOrderChecked(e.target.value);
-    // onFilter(e.target.value)
+    onSort(e.target.value)
     // console.log(e.target.value)
   }
 
