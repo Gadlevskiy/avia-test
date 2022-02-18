@@ -1,4 +1,4 @@
-function Card({flight}) {
+function Card({ flight }) {
   return (
     <li className='card'>
       <div className='card_header'>
@@ -11,8 +11,12 @@ function Card({flight}) {
       <div className='card_body'>
         <div className='card_flight-info'>
           <div className='card_path-info'>
-            Москва, ШЕРЕМЕТЬЕВО <span className='card_path-info-teg'>(SVO)</span> &rarr; ЛОНДОН,
-            Лондон, Хитроу <span className='card_path-info-teg'>(LHR)</span>
+            {flight.firstRun.departureCity}
+            {flight.firstRun.departureAirport}{' '}
+            <span className='card_path-info-teg'>{flight.firstRun.departureAirportTag}</span> &rarr;{' '}
+            {flight.firstRun.arrivalCity}
+            {flight.firstRun.arrivalAirport}{' '}
+            <span className='card_path-info-teg'>{flight.firstRun.arrivalAirportTag}</span>
           </div>
           <div className='card_time-info'>
             <div className='card_time-block'>
@@ -27,12 +31,19 @@ function Card({flight}) {
           </div>
           <div className='card_transfer-info'>
             <hr className='card_split-line' />
-            <div className='card_transfer-status'>1 пересадка</div>
+            {flight.firstRun.transfer ? <div className='card_transfer-status'>1 пересадка</div> : ''}
           </div>
-          <div className='card_airline-info'>Рейс выполняет: полиш аирлайнс</div>
+          <div className='card_airline-info'>Рейс выполняет: {flight.firstRun.flightCarier}</div>
         </div>
         <div className='card_flight-info'>
-          <div className='card_path-info'>Москва, ШЕРЕМЕТЬЕВО &rarr; ЛОНДОН, Лондон, Хитроу</div>
+          <div className='card_path-info'>
+            {flight.secondRun.departureCity}
+            {flight.secondRun.departureAirport}{' '}
+            <span className='card_path-info-teg'>{flight.secondRun.departureAirportTag}</span> &rarr;{' '}
+            {flight.secondRun.arrivalCity}
+            {flight.secondRun.arrivalAirport}{' '}
+            <span className='card_path-info-teg'>{flight.secondRun.arrivalAirportTag}</span>
+          </div>
           <div className='card_time-info'>
             <div className='card_time-block'>
               <p className='card_time'>20:40</p>
@@ -46,9 +57,9 @@ function Card({flight}) {
           </div>
           <div className='card_transfer-info'>
             <hr className='card_split-line' />
-            <div className='card_transfer-status'>1 пересадка</div>
+            {flight.secondRun.transfer ? <div className='card_transfer-status'>1 пересадка</div> : ''}
           </div>
-          <div className='card_airline-info'>Рейс выполняет: полиш аирлайнс</div>
+          <div className='card_airline-info'>Рейс выполняет: {flight.secondRun.flightCarier}</div>
         </div>
       </div>
       <button className='card_select-btn'>ВЫБРАТЬ</button>
