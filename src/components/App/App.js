@@ -116,31 +116,42 @@ function App() {
     });
   }
 
-  function filterByOneTransfer(isTransferChecked, isNoTransferChecked) {
-    isTransferChecked
-      ? setShownFilteredData(
-          filteredData.filter((flight) => {
-            if (flight.firstRun.transfer && flight.secondRun.transfer) {
-              return false;
-            } else if (!flight.firstRun.transfer && !flight.secondRun.transfer) {
-              return false;
-            } else {
-              return true;
-            }
-          })
-        )
-      : setShownFilteredData(filteredData);
-    isNoTransferChecked
-      ? setShownFilteredData(
-          filteredData.filter((flight) => {
-            if (!flight.firstRun.transfer && !flight.secondRun.transfer) {
-              return true;
-            } else {
-              return false;
-            }
-          })
-        )
-      : setShownFilteredData(filteredData);
+  function filterByOneTransfer(data) {
+    return data.filter((flight) => {
+      if (flight.firstRun.transfer && flight.secondRun.transfer) {
+        return false;
+      } else if (!flight.firstRun.transfer && !flight.secondRun.transfer) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  }
+
+  function filterByNoTransfer(data) {
+    return data.filter((flight) => {
+      if (!flight.firstRun.transfer && !flight.secondRun.transfer) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+  }
+
+  function filterByTransfer(isTransferChecked, isNoTransferChecked) {
+    if (isTransferChecked) {
+      if (isNoTransferChecked) {
+        setShownFilteredData([...filterByOneTransfer(filteredData)], filterByNoTransfer(filteredData))
+      } else {
+        setShownFilteredData(filterByOneTransfer(filteredData))
+      }
+    } else {
+      if (isNoTransferChecked) {
+        setShownFilteredData(filterByNoTransfer(filteredData))
+      } else{
+        setShownFilteredData(filteredData)
+      }
+    }
   }
 
   function SortFlights(
@@ -173,7 +184,7 @@ function App() {
 
   return (
     <div className='App'>
-      <Main renderedCards={shownFilteredData} onFilter={filterByOneTransfer} onSort={SortFlights} />
+      <Main renderedCards={shownFilteredData} onFilter={filterByTransfer} onSort={SortFlights} />
       {/* <button onClick={console.log(fitDataOfFlights)}></button> */}
     </div>
   );
