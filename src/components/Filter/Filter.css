@@ -14,3 +14,16 @@
   margin: 0 0 15px 10px;
   font-weight: bold;
 }
+
+.filter-field_label {
+  display: flex;
+}
+
+.filter-field_text {
+  display: inline-block;
+  margin: 0;
+  width: 135px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

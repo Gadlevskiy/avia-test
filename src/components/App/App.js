@@ -4,6 +4,7 @@ import Main from '../Main/Main';
 
 function App() {
   const [fitDataOfFlights, setFitDataOfFlights] = react.useState([]);
+  const [fitDataOfBestPrices, setFitDataOfBestPrices] = react.useState([]);
   const [filteredData, setFilteredData] = react.useState([]);
   const [shownFilteredData, setShownFilteredData] = react.useState([]);
 
@@ -11,16 +12,18 @@ function App() {
     convertApiResponse();
   }, []);
 
-  // react.useEffect(()=>{
-  //   setShownFilteredData(filteredData);
-  // }, [filteredData])
+  react.useEffect(() => {
+    globalFilter('1', false, false, '0', '100000');
+  }, [filteredData]);
 
   react.useEffect(() => {
     setShownFilteredData(fitDataOfFlights);
+    createListOfBestPrices(fitDataOfFlights)
   }, [fitDataOfFlights]);
 
+
   function convertApiResponse() {
-    const response = mainApi.serverResponse.result.flights.map((item, id) => {
+    const listOfFlights = mainApi.serverResponse.result.flights.map((item, id) => {
       const isTransferOnFirstFly = Boolean(item.flight.legs[0].segments.length === 2);
       const isTransferSecondFly = Boolean(item.flight.legs[1].segments.length === 2);
       return {
@@ -100,19 +103,19 @@ function App() {
       };
     });
 
-    setFitDataOfFlights(response);
-    setFilteredData(response);
+    setFitDataOfFlights(listOfFlights);
+    setFilteredData(listOfFlights);
   }
 
   function filterFromHightToLow(data) {
     return data.sort((a, b) => {
-      return a.price - b.price;
+      return b.price - a.price;
     });
   }
 
   function filterFromLowToHight(data) {
     return data.sort((a, b) => {
-      return b.price - a.price;
+      return a.price - b.price;
     });
   }
 
@@ -120,17 +123,6 @@ function App() {
     return data.sort((a, b) => {
       return a.firstRun.travelDuration - b.firstRun.travelDuration;
     });
-  }
-
-  function SortFlights(isOrderChecked) {
-    console.log(isOrderChecked);
-    if (isOrderChecked === 1) {
-      setShownFilteredData(filterFromHightToLow(filteredData));
-    } else if (isOrderChecked === 2) {
-      setShownFilteredData(filterFromLowToHight(filteredData));
-    } else if (isOrderChecked === 3) {
-      setShownFilteredData(filterByDuration(filteredData));
-    }
   }
 
   function filterByOneTransfer(data) {
@@ -165,42 +157,85 @@ function App() {
     });
   }
 
-  function filterByTransfer(isTransferChecked, isNoTransferChecked) {
+  function filterByPrice(min, max, data) {
+    return data.filter((flight) => {
+      return Number(min) <= flight.price && flight.price <= Number(max);
+    });
+  }
+
+  function filterByTransfer(isTransferChecked, isNoTransferChecked, data) {
     if (isTransferChecked) {
       if (isNoTransferChecked) {
-        setShownFilteredData(filterByCocatTransfer(filteredData));
+        return filterByCocatTransfer(data);
       } else {
-        setShownFilteredData(filterByOneTransfer(filteredData));
+        return filterByOneTransfer(data);
       }
     } else {
       if (isNoTransferChecked) {
-        setShownFilteredData(filterByNoTransfer(filteredData));
+        return filterByNoTransfer(data);
       } else {
-        setShownFilteredData(filteredData);
+        return data;
       }
     }
   }
 
-  function filterByPrice(min, max) {
-    return filteredData.filter((flight) => {
-      // console.log((Number(min) <= flight.price && flight.price <= Number(max)))
-      return (Number(min) <= flight.price && flight.price <= Number(max))});
+  function globalFilter(
+    isOrderChecked,
+    isTransferChecked,
+    isNoTransferChecked,
+    minFilterValue,
+    maxFilterValue
+  ) {
+    if (isOrderChecked === '1') {
+      const firstLeveData = filterFromLowToHight(filteredData);
+      const secondLevelData = filterByTransfer(
+        isTransferChecked,
+        isNoTransferChecked,
+        firstLeveData
+      );
+      const thirdLevelData = filterByPrice(minFilterValue, maxFilterValue, secondLevelData);
+      setShownFilteredData(thirdLevelData);
+    } else if (isOrderChecked === '2') {
+      const firstLeveData = filterFromHightToLow(filteredData);
+      const secondLevelData = filterByTransfer(
+        isTransferChecked,
+        isNoTransferChecked,
+        firstLeveData
+      );
+      const thirdLevelData = filterByPrice(minFilterValue, maxFilterValue, secondLevelData);
+      setShownFilteredData(thirdLevelData);
+    } else if (isOrderChecked === '3') {
+      const firstLeveData = filterByDuration(filteredData);
+      const secondLevelData = filterByTransfer(
+        isTransferChecked,
+        isNoTransferChecked,
+        firstLeveData
+      );
+      const thirdLevelData = filterByPrice(minFilterValue, maxFilterValue, secondLevelData);
+      setShownFilteredData(thirdLevelData);
+    }
   }
 
-  function filterByBy(minFilterValue, maxFilterValue) {
-    // console.log(filterByPrice(minFilterValue, maxFilterValue));
-    setShownFilteredData(filterByPrice(minFilterValue, maxFilterValue))
+  function createListOfBestPrices(dataOfFlights) {
+    const airlines = [...new Set(dataOfFlights.map((item) => item.carrier))];
+    const fitData = airlines.map((item) => {
+      const allPrices = dataOfFlights.filter((flight) => flight.carrier === item);
+      const bestPrice = Math.min(...allPrices.map((data) => Number(data.price)));
+      return {
+        carrier: item,
+        bestPrice: bestPrice,
+      };
+    });
+    setFitDataOfBestPrices(fitData);
   }
 
   return (
     <div className='App'>
       <Main
         renderedCards={shownFilteredData}
-        onFilter={filterByTransfer}
-        onSort={SortFlights}
-        onFilterByPrice={filterByBy}
+        onFilter={globalFilter}
+        bestPrices={fitDataOfBestPrices}
       />
-      {/* <button onClick={console.log(fitDataOfFlights)}></button> */}
     </div>
   );
 }

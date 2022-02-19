@@ -1,6 +1,6 @@
 import react from 'react';
 
-function Filter({ onFilter, onSort, onFilterByPrice }) {
+function Filter({ onFilter, bestPrices }) {
   const [isOrderChecked, setIsOrderChecked] = react.useState('1');
   const [isTransferChecked, setIsTransferChecked] = react.useState(false);
   const [isNoTransferChecked, setIsNoTransferChecked] = react.useState(false);
@@ -9,28 +9,49 @@ function Filter({ onFilter, onSort, onFilterByPrice }) {
 
   function handleChangeOrderBtn(e) {
     setIsOrderChecked(e.target.value);
-    onSort(e.target.value)
-    // console.log(e.target.value)
+    onFilter(
+      e.target.value,
+      isTransferChecked,
+      isNoTransferChecked,
+      minFilterValue,
+      maxFilterValue
+    );
   }
 
   function handleChangeTransferValue(e) {
     setIsTransferChecked(e.target.checked);
-    onFilter(e.target.checked, isNoTransferChecked);
+    // onFilter(e.target.checked, isNoTransferChecked);
+    onFilter(isOrderChecked, e.target.checked, isNoTransferChecked, minFilterValue, maxFilterValue);
   }
 
   function handleChangeNoTransferValue(e) {
     setIsNoTransferChecked(e.target.checked);
-    onFilter(isTransferChecked, e.target.checked);
+    // onFilter(isTransferChecked, e.target.checked);
+    onFilter(isOrderChecked, isTransferChecked, e.target.checked, minFilterValue, maxFilterValue);
   }
 
   function handleChangeMinFilterValue(e) {
     setMinFilterValue(e.target.value);
-    onFilterByPrice(e.target.value, maxFilterValue)
+    // onFilterByPrice(e.target.value, maxFilterValue)
+    onFilter(
+      isOrderChecked,
+      isTransferChecked,
+      isNoTransferChecked,
+      e.target.value,
+      maxFilterValue
+    );
   }
 
   function handleChangeMaxFilterValue(e) {
     setMaxFilterValue(e.target.value);
-    onFilterByPrice(minFilterValue, e.target.value)
+    // onFilterByPrice(minFilterValue, e.target.value)
+    onFilter(
+      isOrderChecked,
+      isTransferChecked,
+      isNoTransferChecked,
+      minFilterValue,
+      e.target.value
+    );
   }
 
   return (
@@ -121,12 +142,14 @@ function Filter({ onFilter, onSort, onFilterByPrice }) {
         </div>
         <div className='filter-field_form-box'>
           <p className='filter-field_heading-text'>Авиакомпании</p>
-          <label className='filter-field_label'>
-            <input className='filter-field_input' type='checkbox' />- lot 121212p
-          </label>
-          <label className='filter-field_label'>
-            <input className='filter-field_input' type='checkbox' />- Aeroflot 234134134p
-          </label>
+          {bestPrices
+            ? bestPrices.map((item, i) => (
+                <label key={i} className='filter-field_label'>
+                  <input className='filter-field_input' type='checkbox' value={item.carrier} />-
+                  <span className='filter-field_text'>{item.carrier}</span> от {item.bestPrice}р
+                </label>
+              ))
+            : ''}
         </div>
       </form>
     </div>
