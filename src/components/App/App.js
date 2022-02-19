@@ -116,8 +116,8 @@ function App() {
     });
   }
 
-  function filterByPrice(data) {
-    data.sort((a, b) => {
+  function filterByDuration(data) {
+    return data.sort((a, b) => {
       return a.firstRun.travelDuration - b.firstRun.travelDuration;
     });
   }
@@ -129,7 +129,7 @@ function App() {
     } else if (isOrderChecked === 2) {
       setShownFilteredData(filterFromLowToHight(filteredData));
     } else if (isOrderChecked === 3) {
-      setShownFilteredData(filterByPrice(filteredData));
+      setShownFilteredData(filterByDuration(filteredData));
     }
   }
 
@@ -165,26 +165,41 @@ function App() {
     });
   }
 
-
   function filterByTransfer(isTransferChecked, isNoTransferChecked) {
     if (isTransferChecked) {
       if (isNoTransferChecked) {
-        setShownFilteredData(filterByCocatTransfer(filteredData))
+        setShownFilteredData(filterByCocatTransfer(filteredData));
       } else {
-        setShownFilteredData(filterByOneTransfer(filteredData))
+        setShownFilteredData(filterByOneTransfer(filteredData));
       }
     } else {
       if (isNoTransferChecked) {
-        setShownFilteredData(filterByNoTransfer(filteredData))
-      } else{
-        setShownFilteredData(filteredData)
+        setShownFilteredData(filterByNoTransfer(filteredData));
+      } else {
+        setShownFilteredData(filteredData);
       }
     }
   }
 
+  function filterByPrice(min, max) {
+    return filteredData.filter((flight) => {
+      // console.log((Number(min) <= flight.price && flight.price <= Number(max)))
+      return (Number(min) <= flight.price && flight.price <= Number(max))});
+  }
+
+  function filterByBy(minFilterValue, maxFilterValue) {
+    // console.log(filterByPrice(minFilterValue, maxFilterValue));
+    setShownFilteredData(filterByPrice(minFilterValue, maxFilterValue))
+  }
+
   return (
     <div className='App'>
-      <Main renderedCards={shownFilteredData} onFilter={filterByTransfer} onSort={SortFlights} />
+      <Main
+        renderedCards={shownFilteredData}
+        onFilter={filterByTransfer}
+        onSort={SortFlights}
+        onFilterByPrice={filterByBy}
+      />
       {/* <button onClick={console.log(fitDataOfFlights)}></button> */}
     </div>
   );

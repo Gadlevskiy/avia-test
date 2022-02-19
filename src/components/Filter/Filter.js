@@ -1,11 +1,11 @@
 import react from 'react';
 
-function Filter({ onFilter, onSort }) {
+function Filter({ onFilter, onSort, onFilterByPrice }) {
   const [isOrderChecked, setIsOrderChecked] = react.useState('1');
   const [isTransferChecked, setIsTransferChecked] = react.useState(false);
   const [isNoTransferChecked, setIsNoTransferChecked] = react.useState(false);
-  const [minFilterValue, setMinFilterValue] = react.useState('');
-  const [maxFilterValue, setMaxFilterValue] = react.useState('');
+  const [minFilterValue, setMinFilterValue] = react.useState('0');
+  const [maxFilterValue, setMaxFilterValue] = react.useState('100000');
 
   function handleChangeOrderBtn(e) {
     setIsOrderChecked(e.target.value);
@@ -25,10 +25,12 @@ function Filter({ onFilter, onSort }) {
 
   function handleChangeMinFilterValue(e) {
     setMinFilterValue(e.target.value);
+    onFilterByPrice(e.target.value, maxFilterValue)
   }
 
   function handleChangeMaxFilterValue(e) {
     setMaxFilterValue(e.target.value);
+    onFilterByPrice(minFilterValue, e.target.value)
   }
 
   return (
@@ -111,7 +113,7 @@ function Filter({ onFilter, onSort }) {
             <input
               className='filter-field_input'
               type='number'
-              placeholder='0'
+              placeholder='10000'
               value={maxFilterValue || ''}
               onChange={handleChangeMaxFilterValue}
             />
