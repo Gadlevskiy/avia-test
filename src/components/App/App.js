@@ -13,14 +13,13 @@ function App() {
   }, []);
 
   react.useEffect(() => {
-    globalFilter('1', false, false, '0', '100000');
+    globalFilter('1', false, false, '0', '100000', fitDataOfBestPrices);
   }, [filteredData]);
 
   react.useEffect(() => {
     setShownFilteredData(fitDataOfFlights);
-    createListOfBestPrices(fitDataOfFlights)
+    createListOfBestPrices(fitDataOfFlights);
   }, [fitDataOfFlights]);
-
 
   function convertApiResponse() {
     const listOfFlights = mainApi.serverResponse.result.flights.map((item, id) => {
@@ -179,12 +178,31 @@ function App() {
     }
   }
 
+  function filterByBestPrices(dataOfChecked, allData) {
+    const isAllCheckedFalse = dataOfChecked.filter((bit) => bit.checked === true);
+    if (!(isAllCheckedFalse.length === 0)) {
+      return allData.filter((data) => {
+        const checked = dataOfChecked.filter((item) => item.name === data.carrier);
+        if (dataOfChecked.length === 0) {
+          return true;
+        } else if (checked[0].checked) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      return allData;
+    }
+  }
+
   function globalFilter(
     isOrderChecked,
     isTransferChecked,
     isNoTransferChecked,
     minFilterValue,
-    maxFilterValue
+    maxFilterValue,
+    values
   ) {
     if (isOrderChecked === '1') {
       const firstLeveData = filterFromLowToHight(filteredData);
@@ -194,7 +212,8 @@ function App() {
         firstLeveData
       );
       const thirdLevelData = filterByPrice(minFilterValue, maxFilterValue, secondLevelData);
-      setShownFilteredData(thirdLevelData);
+      const fourthLevelData = filterByBestPrices(values, thirdLevelData);
+      setShownFilteredData(fourthLevelData);
     } else if (isOrderChecked === '2') {
       const firstLeveData = filterFromHightToLow(filteredData);
       const secondLevelData = filterByTransfer(
@@ -203,7 +222,8 @@ function App() {
         firstLeveData
       );
       const thirdLevelData = filterByPrice(minFilterValue, maxFilterValue, secondLevelData);
-      setShownFilteredData(thirdLevelData);
+      const fourthLevelData = filterByBestPrices(values, thirdLevelData);
+      setShownFilteredData(fourthLevelData);
     } else if (isOrderChecked === '3') {
       const firstLeveData = filterByDuration(filteredData);
       const secondLevelData = filterByTransfer(
@@ -212,7 +232,8 @@ function App() {
         firstLeveData
       );
       const thirdLevelData = filterByPrice(minFilterValue, maxFilterValue, secondLevelData);
-      setShownFilteredData(thirdLevelData);
+      const fourthLevelData = filterByBestPrices(values, thirdLevelData);
+      setShownFilteredData(fourthLevelData);
     }
   }
 
@@ -224,7 +245,7 @@ function App() {
       return {
         name: item,
         bestPrice: bestPrice,
-        checked: false
+        checked: false,
       };
     });
     setFitDataOfBestPrices(fitData);

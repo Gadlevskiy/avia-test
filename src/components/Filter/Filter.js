@@ -8,9 +8,9 @@ function Filter({ onFilter, bestPrices }) {
   const [maxFilterValue, setMaxFilterValue] = react.useState('100000');
   const [values, setValues] = react.useState();
 
-  react.useEffect(()=>{
-    setValues(bestPrices)
-  },[bestPrices])
+  react.useEffect(() => {
+    setValues(bestPrices);
+  }, [bestPrices]);
 
   function handleChangeOrderBtn(e) {
     setIsOrderChecked(e.target.value);
@@ -19,18 +19,33 @@ function Filter({ onFilter, bestPrices }) {
       isTransferChecked,
       isNoTransferChecked,
       minFilterValue,
-      maxFilterValue
+      maxFilterValue,
+      values
     );
   }
 
   function handleChangeTransferValue(e) {
     setIsTransferChecked(e.target.checked);
-    onFilter(isOrderChecked, e.target.checked, isNoTransferChecked, minFilterValue, maxFilterValue);
+    onFilter(
+      isOrderChecked,
+      e.target.checked,
+      isNoTransferChecked,
+      minFilterValue,
+      maxFilterValue,
+      values
+    );
   }
 
   function handleChangeNoTransferValue(e) {
     setIsNoTransferChecked(e.target.checked);
-    onFilter(isOrderChecked, isTransferChecked, e.target.checked, minFilterValue, maxFilterValue);
+    onFilter(
+      isOrderChecked,
+      isTransferChecked,
+      e.target.checked,
+      minFilterValue,
+      maxFilterValue,
+      values
+    );
   }
 
   function handleChangeMinFilterValue(e) {
@@ -40,7 +55,8 @@ function Filter({ onFilter, bestPrices }) {
       isTransferChecked,
       isNoTransferChecked,
       e.target.value,
-      maxFilterValue
+      maxFilterValue,
+      values
     );
   }
 
@@ -51,7 +67,8 @@ function Filter({ onFilter, bestPrices }) {
       isTransferChecked,
       isNoTransferChecked,
       minFilterValue,
-      e.target.value
+      e.target.value,
+      values
     );
   }
 
@@ -67,9 +84,16 @@ function Filter({ onFilter, bestPrices }) {
       }
 
       return subject;
-
     });
     setValues(updatePrices);
+    onFilter(
+      isOrderChecked,
+      isTransferChecked,
+      isNoTransferChecked,
+      minFilterValue,
+      maxFilterValue,
+      updatePrices
+    );
   }
 
   return (
