@@ -1,4 +1,23 @@
 function Card({ flight }) {
+
+  function convertIsoDate(mins) {
+    let hours = Math.trunc(mins/60);
+    let minutes = mins % 60;
+    return hours + ' ч ' + minutes + ' мин';
+  }
+
+  function getTimeFromDate(date) {
+    const newDate = new Date(date);
+    return newDate.getHours()+':'+newDate.getMinutes()
+  }
+
+  function getMonthFromDate(date) {
+    const newDate = new Date(date);
+    const days = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
+    const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+    return newDate.getDate()+' '+(months[newDate.getMonth()]).toLocaleLowerCase()+'. '+(days[newDate.getDay()]).toLocaleLowerCase()
+  }
+
   return (
     <li className='card'>
       <div className='card_header'>
@@ -13,20 +32,20 @@ function Card({ flight }) {
           <div className='card_path-info'>
             {flight.firstRun.departureCity}
             {flight.firstRun.departureAirport}{' '}
-            <span className='card_path-info-teg'>{flight.firstRun.departureAirportTag}</span> &rarr;{' '}
+            <span className='card_path-info-teg'>({flight.firstRun.departureAirportTag})</span> &rarr;{' '}
             {flight.firstRun.arrivalCity}
             {flight.firstRun.arrivalAirport}{' '}
-            <span className='card_path-info-teg'>{flight.firstRun.arrivalAirportTag}</span>
+            <span className='card_path-info-teg'>({flight.firstRun.arrivalAirportTag})</span>
           </div>
           <div className='card_time-info'>
             <div className='card_time-block'>
-              <p className='card_time'>20:40</p>
-              <p className='card_date'>18авг</p>
+              <p className='card_time'>{getTimeFromDate(flight.firstRun.departureDate)}</p>
+              <p className='card_date'>{getMonthFromDate(flight.firstRun.departureDate)}</p>
             </div>
-            <p className='card_duration'>14:45</p>
+            <p className='card_duration'>{convertIsoDate(flight.firstRun.travelDuration)}</p>
             <div className='card_time-block'>
-              <p className='card_date'>19авг</p>
-              <p className='card_time'>09:25</p>
+              <p className='card_date'>{getMonthFromDate(flight.firstRun.arrivalDate)}</p>
+              <p className='card_time'>{getTimeFromDate(flight.firstRun.arrivalDate)}</p>
             </div>
           </div>
           <div className='card_transfer-info'>
@@ -39,20 +58,20 @@ function Card({ flight }) {
           <div className='card_path-info'>
             {flight.secondRun.departureCity}
             {flight.secondRun.departureAirport}{' '}
-            <span className='card_path-info-teg'>{flight.secondRun.departureAirportTag}</span> &rarr;{' '}
+            <span className='card_path-info-teg'>({flight.secondRun.departureAirportTag})</span> &rarr;{' '}
             {flight.secondRun.arrivalCity}
             {flight.secondRun.arrivalAirport}{' '}
-            <span className='card_path-info-teg'>{flight.secondRun.arrivalAirportTag}</span>
+            <span className='card_path-info-teg'>({flight.secondRun.arrivalAirportTag})</span>
           </div>
           <div className='card_time-info'>
             <div className='card_time-block'>
-              <p className='card_time'>20:40</p>
-              <p className='card_date'>18авг</p>
+              <p className='card_time'>{getTimeFromDate(flight.secondRun.departureDate)}</p>
+              <p className='card_date'>{getMonthFromDate(flight.secondRun.departureDate)}</p>
             </div>
-            <p className='card_duration'>14:45</p>
+            <p className='card_duration'>{convertIsoDate(flight.secondRun.travelDuration)}</p>
             <div className='card_time-block'>
-              <p className='card_date'>19авг</p>
-              <p className='card_time'>09:25</p>
+              <p className='card_date'>{getMonthFromDate(flight.secondRun.arrivalDate)}</p>
+              <p className='card_time'>{getTimeFromDate(flight.secondRun.arrivalDate)}</p>
             </div>
           </div>
           <div className='card_transfer-info'>

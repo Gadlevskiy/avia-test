@@ -214,6 +214,7 @@ function App() {
       const thirdLevelData = filterByPrice(minFilterValue, maxFilterValue, secondLevelData);
       const fourthLevelData = filterByBestPrices(values, thirdLevelData);
       setShownFilteredData(fourthLevelData);
+      console.log(fourthLevelData)
     } else if (isOrderChecked === '2') {
       const firstLeveData = filterFromHightToLow(filteredData);
       const secondLevelData = filterByTransfer(
