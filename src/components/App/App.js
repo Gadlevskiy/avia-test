@@ -218,12 +218,13 @@ function App() {
 
   function createListOfBestPrices(dataOfFlights) {
     const airlines = [...new Set(dataOfFlights.map((item) => item.carrier))];
-    const fitData = airlines.map((item) => {
+    const fitData = airlines.map((item, i) => {
       const allPrices = dataOfFlights.filter((flight) => flight.carrier === item);
       const bestPrice = Math.min(...allPrices.map((data) => Number(data.price)));
       return {
-        carrier: item,
+        name: item,
         bestPrice: bestPrice,
+        checked: false
       };
     });
     setFitDataOfBestPrices(fitData);
