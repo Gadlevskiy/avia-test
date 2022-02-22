@@ -8,10 +8,12 @@ function App() {
   const [filteredData, setFilteredData] = react.useState([]);
   const [shownFilteredData, setShownFilteredData] = react.useState([]);
 
+  // обрабатываем "ответ api"
   react.useEffect(() => {
     convertApiResponse();
   }, []);
 
+  // первая фильтрация(initial)
   react.useEffect(() => {
     globalFilter('1', false, false, '0', '100000', fitDataOfBestPrices);
   }, [filteredData]);
@@ -21,6 +23,7 @@ function App() {
     createListOfBestPrices(fitDataOfFlights);
   }, [fitDataOfFlights]);
 
+  // Функция обрабатывает входные данные, собирает их вместе и записывает в стейт
   function convertApiResponse() {
     const listOfFlights = mainApi.serverResponse.result.flights.map((item, id) => {
       const isTransferOnFirstFly = Boolean(item.flight.legs[0].segments.length === 2);
@@ -106,28 +109,34 @@ function App() {
     setFilteredData(listOfFlights);
   }
 
+  // Функция сортирует переданный массив от большего значения поля price к меньшему
   function filterFromHightToLow(data) {
     return data.sort((a, b) => {
       return b.price - a.price;
     });
   }
 
+  // Функция сортирует переданный массив от меньшего значения поля price к большему
   function filterFromLowToHight(data) {
     return data.sort((a, b) => {
       return a.price - b.price;
     });
   }
 
+  // Функция сортирует переданный массив по возрастанию по времени в пути
   function filterByDuration(data) {
     return data.sort((a, b) => {
       return a.firstRun.travelDuration - b.firstRun.travelDuration;
     });
   }
 
+  // Функция фильтрует переданный массив и возвращает массив удовлетваряющий условию
   function filterByOneTransfer(data) {
     return data.filter((flight) => {
+      // если на обоих маршрутах по 1 пересадке
       if (flight.firstRun.transfer && flight.secondRun.transfer) {
         return false;
+        // если на обоих маршрутах нет пересадок
       } else if (!flight.firstRun.transfer && !flight.secondRun.transfer) {
         return false;
       } else {
@@ -136,8 +145,10 @@ function App() {
     });
   }
 
+  // Функция фильтрует переданный массив и возвращает массив удовлетваряющий условию
   function filterByNoTransfer(data) {
     return data.filter((flight) => {
+      // если на обоих маршрутах нет пересадок
       if (!flight.firstRun.transfer && !flight.secondRun.transfer) {
         return true;
       } else {
@@ -146,8 +157,10 @@ function App() {
     });
   }
 
+  // Функция фильтрует переданный массив и возвращает массив удовлетваряющий условию
   function filterByCocatTransfer(data) {
     return data.filter((flight) => {
+      // если оба маршрута с 1 пересадкой
       if (flight.firstRun.transfer && flight.secondRun.transfer) {
         return false;
       } else {
@@ -156,12 +169,14 @@ function App() {
     });
   }
 
+  // Функция фильтрует переданный массив и возвращает массив удовлетваряющий условию
   function filterByPrice(min, max, data) {
     return data.filter((flight) => {
       return Number(min) <= flight.price && flight.price <= Number(max);
     });
   }
-
+  
+  // Функция обработки фильтра по наличию и/или отсутсвию пересадок
   function filterByTransfer(isTransferChecked, isNoTransferChecked, data) {
     if (isTransferChecked) {
       if (isNoTransferChecked) {
@@ -178,24 +193,31 @@ function App() {
     }
   }
 
+  // Функция возвращает массив перелетов, которые соответсвуют выбранным авиакомпаниям из филтра по названию
   function filterByBestPrices(dataOfChecked, allData) {
+    // записываю в переменную все отмеченные компании(checked === true)
     const isAllCheckedFalse = dataOfChecked.filter((bit) => bit.checked === true);
+    // если массив не пустой начинается фильтрация (есть хотя бы одно значение true)
     if (!(isAllCheckedFalse.length === 0)) {
       return allData.filter((data) => {
         const checked = dataOfChecked.filter((item) => item.name === data.carrier);
+        // пропускаю все значения если передали пустой массив(решение для комфортной фильтрации при первом рендере)
         if (dataOfChecked.length === 0) {
           return true;
+        // проверка на нажатую отметку по полю checked
         } else if (checked[0].checked) {
           return true;
         } else {
           return false;
         }
       });
+      // если массив пустой возвращаем исходные данные
     } else {
       return allData;
     }
   }
 
+  // Функция собирает в себя всю логику всех фильтров формы, каскадная проверка
   function globalFilter(
     isOrderChecked,
     isTransferChecked,
@@ -214,7 +236,6 @@ function App() {
       const thirdLevelData = filterByPrice(minFilterValue, maxFilterValue, secondLevelData);
       const fourthLevelData = filterByBestPrices(values, thirdLevelData);
       setShownFilteredData(fourthLevelData);
-      console.log(fourthLevelData)
     } else if (isOrderChecked === '2') {
       const firstLeveData = filterFromHightToLow(filteredData);
       const secondLevelData = filterByTransfer(
@@ -238,17 +259,22 @@ function App() {
     }
   }
 
+  // Функция выдает список компаний перевозчиков с их лучшей ценой
   function createListOfBestPrices(dataOfFlights) {
+    // Set - коллекция которая хранит в себе уникальные значения
     const airlines = [...new Set(dataOfFlights.map((item) => item.carrier))];
-    const fitData = airlines.map((item, i) => {
+    // Вычисляем лучшую цену перелета для каждого перевозчика
+    const fitData = airlines.map((item) => {
       const allPrices = dataOfFlights.filter((flight) => flight.carrier === item);
       const bestPrice = Math.min(...allPrices.map((data) => Number(data.price)));
+      // Возвращаем обьект для отображения в форме
       return {
         name: item,
         bestPrice: bestPrice,
         checked: false,
       };
     });
+    // весь массив ушел в стейт
     setFitDataOfBestPrices(fitData);
   }
 
